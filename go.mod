@@ -1,0 +1,1 @@
+module flutter-sdk-manager
