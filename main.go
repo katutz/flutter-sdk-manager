@@ -16,10 +16,21 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Error creating StdoutPipe for Cmd", err)
 		os.Exit(1)
 	}
+	errReader, err := cmd.StderrPipe()
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Error creating StderrPipe for Cmd", err)
+		os.Exit(1)
+	}
 	scanner := bufio.NewScanner(cmdReader)
+	errScanner := bufio.NewScanner(errReader)
 	go func() {
 		for scanner.Scan() {
 			fmt.Println(scanner.Text())
+		}
+	}()
+	go func() {
+		for errScanner.Scan() {
+			fmt.Println(errScanner.Text())
 		}
 	}()
 	err = cmd.Start()
